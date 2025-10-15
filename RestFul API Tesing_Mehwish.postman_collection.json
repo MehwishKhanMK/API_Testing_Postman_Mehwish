@@ -1,0 +1,323 @@
+{
+	"info": {
+		"_postman_id": "62ba0286-4c54-4885-8e42-61432cf29a37",
+		"name": "RestFul API Tesing_Mehwish",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30198584"
+	},
+	"item": [
+		{
+			"name": "POST_Create Object",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"randomName\", \"Device_\" + Math.floor(Math.random() * 10000));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", () => pm.expect(pm.response.code).to.be.oneOf([200, 201]));\r",
+							"let res = pm.response.json();\r",
+							"console.log(\"POST Response:\", res);\r",
+							"pm.expect(res).to.have.property(\"id\");\r",
+							"pm.environment.set(\"objectId\", res.id); // save for chaining\r",
+							"console.log(\"Created Object ID:\", res.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Mehwish\",\r\n  \"data\": {\r\n    \"year\": 2025,\r\n    \"price\": 1500,\r\n    \"CPU model\": \"Intel Core i7\",\r\n    \"Hard disk size\": \"1 TB\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/objects",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Objects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"let res = pm.response.json();\r",
+							"pm.test(\"At least one object exists\", () => pm.expect(res.length).to.be.above(0));\r",
+							"console.log(\"GET All Objects:\", res.length);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/objects",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Single Object",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/objects/ff8081819782e69e0199e7fd2765510a",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects",
+						"ff8081819782e69e0199e7fd2765510a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT_Update Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"let res = pm.response.json();\r",
+							"pm.test(\"Updated name appears\", () => pm.expect(res.name).to.eql(\"Updated_Device\"));\r",
+							"console.log(\"Updated Object:\", res);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Updated_Device\",\r\n  \"data\": {\r\n    \"year\": 2026,\r\n    \"price\": 2000\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/objects/ff8081819782e69e0199e7fd2765510a",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects",
+						"ff8081819782e69e0199e7fd2765510a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH_Patially update Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"let res = pm.response.json();\r",
+							"pm.test(\"Partial update applied\", () => pm.expect(res.data.price).to.eql(2500));\r",
+							"console.log(\"Patched Object:\", res);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"data\": {\r\n    \"price\": 2500\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/objects/ff8081819782e69e0199e7fd2765510a",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects",
+						"ff8081819782e69e0199e7fd2765510a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE – Remove Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"let res = pm.response.json();\r",
+							"pm.expect(res.message).to.include(\"deleted\");\r",
+							"console.log(\"Deleted:\", res);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/objects/ff8081819782e69e0199e7fd2765510a",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects",
+						"ff8081819782e69e0199e7fd2765510a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a deleted ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/objects/ff8081819782e69e0199e7fd2765510a",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects",
+						"ff8081819782e69e0199e7fd2765510a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Failed Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/objects/1s",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"objects",
+						"1s"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		}
+	]
+}
